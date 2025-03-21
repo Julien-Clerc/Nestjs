@@ -1,5 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToMany, JoinTable, OneToMany } from "typeorm";
 import { Exclude } from "class-transformer";
+import { Interest } from '../interests/interests.entity';
+import { Project } from "src/projects/projects.entity";
+import { Investment } from "src/investments/investments.entity";
 
 @Entity()
 export class User {
@@ -28,4 +31,14 @@ export class User {
 
     @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP(6)' })
     createAt: Date;
+
+    @ManyToMany(() => Interest, interest => interest.users)
+    @JoinTable({name: "user_interests"})
+    interests: Interest[];
+
+    @OneToMany(() => Project, project => project.owner)
+    projects: Project[];
+
+    @OneToMany(() => Investment, investement => investement.investor)
+    investments: Investment[];
 }
